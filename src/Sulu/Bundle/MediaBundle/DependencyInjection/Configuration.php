@@ -44,6 +44,7 @@ class Configuration implements ConfigurationInterface
             ->arrayNode('storage')
                 ->addDefaultsIfNotSet()
                 ->children()
+                    ->scalarNode('default')->defaultValue('local')->end()
                     ->arrayNode('local')
                         ->addDefaultsIfNotSet()
                         ->children()
