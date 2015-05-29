@@ -25,7 +25,7 @@ abstract class BaseCollection implements CollectionInterface
     /**
      * @var string
      */
-    private $defaultStorageType;
+    private $defaultStorageName;
 
     /**
      * @var int
@@ -160,26 +160,26 @@ abstract class BaseCollection implements CollectionInterface
     }
 
     /**
-     * Set defaultStorageType
+     * Set defaultStorageName
      *
-     * @param string $defaultStorageType
+     * @param string $defaultStorageName
      * @return Collection
      */
-    public function setDefaultStorageType($defaultStorageType)
+    public function setDefaultStorageName($defaultStorageName)
     {
-        $this->defaultStorageType = $defaultStorageType;
+        $this->defaultStorageName = $defaultStorageName;
 
         return $this;
     }
 
     /**
-     * Get defaultStorageType
+     * Get defaultStorageName
      *
      * @return string
      */
-    public function getDefaultStorageType()
+    public function getDefaultStorageName()
     {
-        return $this->defaultStorageType;
+        return $this->defaultStorageName;
     }
 
     /**

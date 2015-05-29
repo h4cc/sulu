@@ -24,7 +24,7 @@ use Sulu\Bundle\MediaBundle\Media\Exception\InvalidMimeTypeForPreviewException;
 use Sulu\Bundle\MediaBundle\Media\Exception\MediaException;
 use Sulu\Bundle\MediaBundle\Media\FormatCache\FormatCacheInterface;
 use Sulu\Bundle\MediaBundle\Media\ImageConverter\ImageConverterInterface;
-use Sulu\Bundle\MediaBundle\Media\Storage\StorageInterface;
+use Sulu\Bundle\MediaBundle\Media\StorageManager\StorageManagerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -46,9 +46,9 @@ class FormatManager implements FormatManagerInterface
     private $formatCache;
 
     /**
-     * @var StorageInterface
+     * @var StorageManagerInterface
      */
-    private $originalStorage;
+    private $storageManager;
 
     /**
      * @var ImageConverterInterface
@@ -92,7 +92,7 @@ class FormatManager implements FormatManagerInterface
 
     /**
      * @param MediaRepository $mediaRepository
-     * @param StorageInterface $originalStorage
+     * @param StorageManagerInterface $storageManager
      * @param FormatCacheInterface $formatCache
      * @param ImageConverterInterface $converter
      * @param string $ghostScriptPath
@@ -103,7 +103,7 @@ class FormatManager implements FormatManagerInterface
      */
     public function __construct(
         MediaRepository $mediaRepository,
-        StorageInterface $originalStorage,
+        StorageManagerInterface $storageManager,
         FormatCacheInterface $formatCache,
         ImageConverterInterface $converter,
         $ghostScriptPath,
@@ -113,7 +113,7 @@ class FormatManager implements FormatManagerInterface
         $formats
     ) {
         $this->mediaRepository = $mediaRepository;
-        $this->originalStorage = $originalStorage;
+        $this->storageManager = $storageManager;
         $this->formatCache = $formatCache;
         $this->converter = $converter;
         $this->ghostScriptPath = $ghostScriptPath;
@@ -138,7 +138,7 @@ class FormatManager implements FormatManagerInterface
             }
 
             // load Media Data
-            list($fileName, $version, $storageOptions, $mimeType) = $this->getMediaData($media);
+            list($fileName, $version, $storageOptions, $mimeType, $storageName) = $this->getMediaData($media);
 
             try {
                 // check if file has supported preview
@@ -151,7 +151,7 @@ class FormatManager implements FormatManagerInterface
                 $formatOptions = $format['options'];
 
                 // load Original
-                $uri = $this->originalStorage->load($fileName, $version, $storageOptions);
+                $uri = $this->storageManager->load($fileName, $version, $storageOptions, $storageName);
                 $original = $this->createTmpFile($this->getFile($uri));
 
                 // prepare Media
@@ -473,6 +473,7 @@ class FormatManager implements FormatManagerInterface
         $storageOptions = null;
         $version = null;
         $mimeType = null;
+        $storageName = null;
 
         /** @var File $file */
         foreach ($media->getFiles() as $file) {
@@ -483,6 +484,7 @@ class FormatManager implements FormatManagerInterface
                     $fileName = $fileVersion->getName();
                     $storageOptions = $fileVersion->getStorageOptions();
                     $mimeType = $fileVersion->getMimeType();
+                    $storageName = $fileVersion->getStorageName();
                     break;
                 }
             }
@@ -493,7 +495,7 @@ class FormatManager implements FormatManagerInterface
             throw new ImageProxyMediaNotFoundException('Media file version was not found');
         }
 
-        return array($fileName, $version, $storageOptions, $mimeType);
+        return array($fileName, $version, $storageOptions, $mimeType, $storageName);
     }
 
     /**

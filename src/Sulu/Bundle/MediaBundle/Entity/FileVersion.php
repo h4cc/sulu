@@ -46,7 +46,7 @@ class FileVersion implements AuditableInterface
     /**
      * @var string
      */
-    private $storageType;
+    private $storageName;
 
     /**
      * @var int
@@ -619,25 +619,25 @@ class FileVersion implements AuditableInterface
     }
 
     /**
-     * Set storageType
+     * Set storageName
      *
-     * @param string $storageType
+     * @param string $storageName
      * @return FileVersion
      */
-    public function setStorageType($storageType)
+    public function setStorageName($storageName)
     {
-        $this->storageType = $storageType;
+        $this->storageName = $storageName;
 
         return $this;
     }
 
     /**
-     * Get storageType
+     * Get storageName
      *
      * @return string 
      */
-    public function getStorageType()
+    public function getStorageName()
     {
-        return $this->storageType;
+        return $this->storageName;
     }
 }

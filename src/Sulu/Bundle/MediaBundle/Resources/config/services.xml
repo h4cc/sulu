@@ -6,7 +6,8 @@
         <parameter key="sulu_media.admin.content_navigation_provider.class">Sulu\Bundle\MediaBundle\Admin\MediaContentNavigationProvider</parameter>
         <parameter key="sulu_media.media_repository.class">Sulu\Bundle\MediaBundle\Entity\MediaRepository</parameter>
         <parameter key="sulu_media.collection_repository.class">Sulu\Bundle\MediaBundle\Entity\CollectionRepository</parameter>
-        <parameter key="sulu_media.storage.class">Sulu\Bundle\MediaBundle\Media\Storage\LocalStorage</parameter>
+        <parameter key="sulu_media.storage_local.class">Sulu\Bundle\MediaBundle\Media\Storage\LocalStorage</parameter>
+        <parameter key="sulu_media.storage_manager.class">Sulu\Bundle\MediaBundle\Media\StorageManager\StorageManager</parameter>
         <parameter key="sulu_media.file_validator.class">Sulu\Bundle\MediaBundle\Media\FileValidator\FileValidator</parameter>
         <parameter key="sulu_media.format_manager.class">Sulu\Bundle\MediaBundle\Media\FormatManager\FormatManager</parameter>
         <parameter key="sulu_media.format_cache.class">Sulu\Bundle\MediaBundle\Media\FormatCache\LocalFormatCache</parameter>
@@ -46,10 +47,15 @@
                  factory-method="getRepository">
             <argument>%sulu_media.collection_entity%</argument>
         </service>
-        <service id="sulu_media.storage" class="%sulu_media.storage.class%">
+        <service id="sulu_media.storage_manager" class="%sulu_media.storage_manager.class%">
+            <argument>%sulu_media.storage.default%</argument>
+            <argument type="service" id="logger"/>
+        </service>
+        <service id="sulu_media.storage_local" class="%sulu_media.storage_local.class%">
             <argument>%sulu_media.media.storage.local.path%</argument>
             <argument>%sulu_media.media.storage.local.segments%</argument>
             <argument type="service" id="logger"/>
+            <tag name="sulu_media.storage" alias="local" />
         </service>
         <service id="sulu_media.file_validator" class="%sulu_media.file_validator.class%" />
         <service id="sulu_media.format_cache" class="%sulu_media.format_cache.class%">
@@ -80,7 +86,7 @@
             <argument type="service" id="sulu_media.collection_repository" />
             <argument type="service" id="sulu_security.user_repository" />
             <argument type="service" id="doctrine.orm.entity_manager" />
-            <argument type="service" id="sulu_media.storage" />
+            <argument type="service" id="sulu_media.storage_manager" />
             <argument type="service" id="sulu_media.file_validator" />
             <argument type="service" id="sulu_media.format_manager" />
             <argument type="service" id="sulu_tag.tag_manager" />
@@ -97,7 +103,7 @@
 
         <service id="sulu_media.format_manager" class="%sulu_media.format_manager.class%">
             <argument type="service" id="sulu_media.media_repository" />
-            <argument type="service" id="sulu_media.storage" />
+            <argument type="service" id="sulu_media.storage_manager" />
             <argument type="service" id="sulu_media.format_cache" />
             <argument type="service" id="sulu_media.image.converter" />
             <argument type="string">%sulu_media.ghost_script.path%</argument>
@@ -120,6 +126,7 @@
             <argument type="service" id="sulu_security.user_repository" />
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="string">%sulu_media.collection.previews.format%</argument>
+            <argument>%sulu_media.storage.default%</argument>
         </service>
 
         <service id="sulu_media.twig_extension.disposition_type" class="%sulu_media.twig_extension.disposition_type.class%">
