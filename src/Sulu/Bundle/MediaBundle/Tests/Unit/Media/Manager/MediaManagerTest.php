@@ -76,7 +76,7 @@ class MediaManagerTest extends \PHPUnit_Framework_TestCase
         $this->collectionRepository = $this->prophesize('Sulu\Bundle\MediaBundle\Entity\CollectionRepositoryInterface');
         $this->userRepository = $this->prophesize('Sulu\Component\Security\Authentication\UserRepositoryInterface');
         $this->em = $this->prophesize('Doctrine\ORM\EntityManager');
-        $this->storageManager = $this->prophesize('Sulu\Bundle\MediaBundle\Media\Storage\StorageManagerInterface');
+        $this->storageManager = $this->prophesize('Sulu\Bundle\MediaBundle\Media\StorageManager\StorageManagerInterface');
         $this->validator = $this->prophesize('Sulu\Bundle\MediaBundle\Media\FileValidator\FileValidatorInterface');
         $this->formatManager = $this->prophesize('Sulu\Bundle\MediaBundle\Media\FormatManager\FormatManagerInterface');
         $this->tagManager = $this->prophesize('Sulu\Bundle\TagBundle\Tag\TagManagerInterface');
