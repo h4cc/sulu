@@ -151,7 +151,7 @@ class FormatManager implements FormatManagerInterface
                 $formatOptions = $format['options'];
 
                 // load Original
-                $uri = $this->storageManager->load($fileName, $version, $storageOptions, $storageName);
+                $uri = $this->storageManager->load($storageOptions, $storageName);
                 $original = $this->createTmpFile($this->getFile($uri));
 
                 // prepare Media

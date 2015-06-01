@@ -46,7 +46,7 @@ class MediaManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * @var ObjectProphecy
      */
-    private $storage;
+    private $storageManager;
 
     /**
      * @var ObjectProphecy
@@ -76,7 +76,7 @@ class MediaManagerTest extends \PHPUnit_Framework_TestCase
         $this->collectionRepository = $this->prophesize('Sulu\Bundle\MediaBundle\Entity\CollectionRepositoryInterface');
         $this->userRepository = $this->prophesize('Sulu\Component\Security\Authentication\UserRepositoryInterface');
         $this->em = $this->prophesize('Doctrine\ORM\EntityManager');
-        $this->storage = $this->prophesize('Sulu\Bundle\MediaBundle\Media\Storage\StorageInterface');
+        $this->storageManager = $this->prophesize('Sulu\Bundle\MediaBundle\Media\Storage\StorageManagerInterface');
         $this->validator = $this->prophesize('Sulu\Bundle\MediaBundle\Media\FileValidator\FileValidatorInterface');
         $this->formatManager = $this->prophesize('Sulu\Bundle\MediaBundle\Media\FormatManager\FormatManagerInterface');
         $this->tagManager = $this->prophesize('Sulu\Bundle\TagBundle\Tag\TagManagerInterface');
@@ -87,7 +87,7 @@ class MediaManagerTest extends \PHPUnit_Framework_TestCase
             $this->collectionRepository->reveal(),
             $this->userRepository->reveal(),
             $this->em->reveal(),
-            $this->storage->reveal(),
+            $this->storageManager->reveal(),
             $this->validator->reveal(),
             $this->formatManager->reveal(),
             $this->tagManager->reveal(),

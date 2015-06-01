@@ -19,7 +19,6 @@ use Sulu\Bundle\MediaBundle\Entity\CollectionRepository;
 use Sulu\Bundle\MediaBundle\Entity\CollectionRepositoryInterface;
 use Sulu\Bundle\MediaBundle\Entity\File;
 use Sulu\Bundle\MediaBundle\Entity\FileVersion;
-use Sulu\Bundle\MediaBundle\Entity\FileVersionMeta;
 use Sulu\Bundle\MediaBundle\Entity\Media as MediaEntity;
 use Sulu\Bundle\MediaBundle\Entity\MediaRepositoryInterface;
 use Sulu\Bundle\MediaBundle\Media\Exception\CollectionNotFoundException;
@@ -470,7 +469,6 @@ class MediaManager implements MediaManagerInterface
             $data['storageOptions'] = $this->storageManager->save(
                 $uploadedFile->getPathname(),
                 $uploadedFile->getClientOriginalName(),
-                $version,
                 $currentFileVersion->getStorageOptions(),
                 $currentFileVersion->getStorageName()
             );
@@ -550,7 +548,6 @@ class MediaManager implements MediaManagerInterface
         $data['storageOptions'] = $this->storageManager->save(
             $uploadedFile->getPathname(),
             $uploadedFile->getClientOriginalName(),
-            1,
             null,
             $this->getCollectionDefaultStorageName($data['collection'])
         );
@@ -803,12 +800,17 @@ class MediaManager implements MediaManagerInterface
         // Set Version Urls
         $versionData = array();
         foreach ($media->getFile()->getFileVersions() as $fileVersion) {
+            /** @var FileVersion $fileVersion */
             $versionData[$fileVersion->getVersion()] = array();
-            $versionData[$fileVersion->getVersion()]['url'] = $this->getUrl(
-                $media->getId(),
-                $fileVersion->getName(),
-                $fileVersion->getVersion()
-            );
+            $versionData[$fileVersion->getVersion()]['url'] =
+                $this->storageManager->getDownloadUrl(
+                    $fileVersion->getStorageOptions(),
+                    $fileVersion->getStorageName()
+                ) ?: $this->getUrl(
+                    $media->getId(),
+                    $fileVersion->getName(),
+                    $fileVersion->getVersion()
+                );
         }
 
         $media->setAdditionalVersionData($versionData);
