@@ -17,7 +17,7 @@ use Sulu\Bundle\MediaBundle\Media\Exception\ImageProxyException;
 use Sulu\Bundle\MediaBundle\Media\Exception\MediaException;
 use Sulu\Bundle\MediaBundle\Media\FormatManager\FormatManagerInterface;
 use Sulu\Bundle\MediaBundle\Media\Manager\MediaManagerInterface;
-use Sulu\Bundle\MediaBundle\Media\Storage\StorageInterface;
+use Sulu\Bundle\MediaBundle\Media\StorageManager\StorageManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,7 +37,7 @@ class MediaStreamController extends Controller
     protected $mediaManager = null;
 
     /**
-     * @var StorageInterface
+     * @var StorageManagerInterface
      */
     protected $storage = null;
 
@@ -105,9 +105,9 @@ class MediaStreamController extends Controller
         $fileSize = $fileVersion->getSize();
         $storageOptions = $fileVersion->getStorageOptions();
         $mimeType = $fileVersion->getMimeType();
-        $version = $fileVersion->getVersion();
+        $storageName = $fileVersion->getStorageName();
 
-        $path = $this->getStorage()->load($fileName, $version, $storageOptions);
+        $path = $this->getStorageManager()->load($storageOptions, $storageName);
 
         $response = new StreamedResponse(function () use ($path) {
             flush(); // send headers
@@ -203,12 +203,12 @@ class MediaStreamController extends Controller
     /**
      * getStorage.
      *
-     * @return StorageInterface
+     * @return StorageManagerInterface
      */
-    protected function getStorage()
+    protected function getStorageManager()
     {
         if ($this->storage === null) {
-            $this->storage = $this->get('sulu_media.storage');
+            $this->storage = $this->get('sulu_media.storage_manager');
         }
 
         return $this->storage;

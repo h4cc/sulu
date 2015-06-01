@@ -78,7 +78,7 @@ class FormatManagerTest extends \PHPUnit_Framework_TestCase
 
         $mediaRepository->findMediaById(1)->willReturn($media);
 
-        $storageManager->load('dummy.gif', 1, array('a' => 'b'))->willReturn(
+        $storageManager->load(array('a' => 'b'))->willReturn(
             dirname(__DIR__) . '/../../Fixtures/image/data/dummy.gif'
         );
 
@@ -113,7 +113,7 @@ class FormatManagerTest extends \PHPUnit_Framework_TestCase
     public function testGetFormats()
     {
         $mediaRepository = $this->prophesize('Sulu\Bundle\MediaBundle\Entity\MediaRepository');
-        $originalStorage = $this->prophesize('Sulu\Bundle\MediaBundle\Media\Storage\StorageInterface');
+        $storageManager = $this->prophesize('Sulu\Bundle\MediaBundle\Media\StorageManager\StorageManagerInterface');
         $formatCache = $this->prophesize('Sulu\Bundle\MediaBundle\Media\FormatCache\FormatCacheInterface');
         $converter = $this->prophesize('Sulu\Bundle\MediaBundle\Media\ImageConverter\ImageConverterInterface');
 
@@ -144,7 +144,7 @@ class FormatManagerTest extends \PHPUnit_Framework_TestCase
 
         $formatManager = new FormatManager(
             $mediaRepository->reveal(),
-            $originalStorage->reveal(),
+            $storageManager->reveal(),
             $formatCache->reveal(),
             $converter->reveal(),
             $ghostScriptPath,
@@ -168,7 +168,7 @@ class FormatManagerTest extends \PHPUnit_Framework_TestCase
     public function testGetFormatsNotSupportedMimeType()
     {
         $mediaRepository = $this->prophesize('Sulu\Bundle\MediaBundle\Entity\MediaRepository');
-        $originalStorage = $this->prophesize('Sulu\Bundle\MediaBundle\Media\Storage\StorageInterface');
+        $storageManager = $this->prophesize('Sulu\Bundle\MediaBundle\Media\StorageManager\StorageManagerInterface');
         $formatCache = $this->prophesize('Sulu\Bundle\MediaBundle\Media\FormatCache\FormatCacheInterface');
         $converter = $this->prophesize('Sulu\Bundle\MediaBundle\Media\ImageConverter\ImageConverterInterface');
 
@@ -199,7 +199,7 @@ class FormatManagerTest extends \PHPUnit_Framework_TestCase
 
         $formatManager = new FormatManager(
             $mediaRepository->reveal(),
-            $originalStorage->reveal(),
+            $storageManager->reveal(),
             $formatCache->reveal(),
             $converter->reveal(),
             $ghostScriptPath,
